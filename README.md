@@ -12,6 +12,7 @@ Backsup Marathon and Metronome frameworks from DCOS.
  | --bucket          | AWS_BUCKET            | AWS Bucket to save Backup
  | --metricNameSpace | AWS_METRIC_NAMESPACE  | AWS Metric Namespace to report backup success
  | --topicAlarm      | AWS_ALARM_TOPIC       | AWS alarm topic to alert backup failure
+ | --alarmPrefix     | AWS_ALARM_PREFIX      | The prefix to be used in the cloudwatch alarm name
  | --schedule        | SCHEDULED_BKP_HOUR    | The hour of the day for the backup to run
  |                   | AWS_ACCESS_KEY_ID     | AWS key ID
  |                   | AWS_SECRET_ACCESS_KEY | AWS secret key
