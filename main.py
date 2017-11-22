@@ -168,6 +168,3 @@ if __name__ == '__main__':
         dcosBackuper.start()
     else:
         dcosBackuper.run()
-
-
-#TODO: also backup zookeeper: https://github.com/mhausenblas/burry.sh

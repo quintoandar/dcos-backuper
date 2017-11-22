@@ -24,3 +24,26 @@ Backsup Marathon and Metronome frameworks from DCOS.
  ## TODO
 
  - Backup zookeeper: https://github.com/mhausenblas/burry.sh
+
+## Restoring
+
+- Usage
+
+```bash
+./restore.py [marathon | metronome] <configs>
+```
+
+- Configuration
+
+ |      Command      | Description
+ | ----------------- | -----------
+ | --url             | The framework's API URL
+ | --file            | The backup file
+
+- Tip
+
+You can use an SSL tunnel to open the framework's API port.
+
+```bash
+ssh -L 8080:127.0.0.1:8080 <masterUser@masterHost>
+```
