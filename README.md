@@ -17,6 +17,10 @@ Backsup Marathon and Metronome frameworks from DCOS.
  |                   | AWS_SECRET_ACCESS_KEY | AWS secret key
  |                   | AWS_DEFAULT_REGION    | AWS default region
 
- # Extra features
+ ## Extra features
 
- Creates an alarm on Cloudwatch to warn when dayly backup fails.
+ Creates an alarm on Cloudwatch to warn when daily backup fails.
+
+ ## TODO
+
+ - Backup zookeeper: https://github.com/mhausenblas/burry.sh
