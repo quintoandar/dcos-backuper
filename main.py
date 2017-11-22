@@ -32,7 +32,8 @@ scheduler = BlockingScheduler({'apscheduler.timezone': 'UTC'})
 class DcosBackuper():
 
     def __init__(self, bucket=None, environment=None, metricNameSpace=None,
-                 marathonUrl=None, metronomeUrl=None, alarmTopic=None, scheduledBkpHour=None):
+                 marathonUrl=None, metronomeUrl=None, alarmTopic=None, scheduledBkpHour=None,
+                 alarmPrefix=None):
         self.s3_bucket = os.getenv("AWS_BUCKET", bucket)
         self.environment = os.getenv("BKP_ENVIRONMENT", environment)
         self.marathonUrl = os.getenv("MARARTHON_URL", marathonUrl)
@@ -40,7 +41,9 @@ class DcosBackuper():
         self.metricNameSpace = os.getenv(
             "AWS_METRIC_NAMESPACE", metricNameSpace)
         self.alarmTopic = os.getenv("AWS_ALARM_TOPIC", alarmTopic)
-        self.scheduledBkpHour = os.getenv("SCHEDULED_BKP_HOUR", scheduledBkpHour)
+        self.scheduledBkpHour = os.getenv(
+            "SCHEDULED_BKP_HOUR", scheduledBkpHour)
+        self.alarmPrefix = os.getenv("AWS_ALARM_PREFIX", alarmPrefix)
 
     def getConfig(self, url, path):
         endpoint = url + path
@@ -76,9 +79,8 @@ class DcosBackuper():
                            {
                                'Name': 'EnvironmentBackup',
                                'Value': self.environment
-                           }
-                       ]
-                      }]
+                           }]
+                       }]
         response = cloudwatch.put_metric_data(
             Namespace=self.metricNameSpace, MetricData=metricData)
         LOGGER.info(response)
@@ -86,8 +88,8 @@ class DcosBackuper():
     def createAlarm(self, service):
         cloudwatch = boto3.client('cloudwatch')
 
-        alarm_name = '_QuintoAndar_Monitor_DCOS_BACKUP_%s_%s' % (
-            self.environment, service)
+        alarm_name = '%s_%s_%s' % (self.alarmPrefix,
+                                   self.environment, service)
         response = cloudwatch.put_metric_alarm(
             AlarmName=alarm_name,
             ComparisonOperator='LessThanThreshold',
@@ -146,6 +148,9 @@ if __name__ == '__main__':
     parser.add_argument(
         '--environment', help='the backedup environment', default='test')
     parser.add_argument(
+        '--alarmPrefix', help='the alarm prefix to be used in cloudWatch',
+        default='_QuintoAndar_Monitor_DCOS_BACKUP')
+    parser.add_argument(
         '--bucket', help='the backup bucket', default='test')
     parser.add_argument(
         '--metricNameSpace', help='the CloudWatch Metric Namespace', default='DCOSServices')
@@ -159,7 +164,8 @@ if __name__ == '__main__':
     dcosBackuper = DcosBackuper(environment=args.environment, marathonUrl=args.marathonUrl,
                                 metronomeUrl=args.metronomeUrl,
                                 metricNameSpace=args.metricNameSpace,
-                                alarmTopic=args.topicAlarm, scheduledBkpHour=args.scheduledBkpHour)
+                                alarmTopic=args.topicAlarm, scheduledBkpHour=args.scheduledBkpHour,
+                                alarmPrefix=args.alarmPrefix)
 
     if dcosBackuper.alarmTopic != None:
         dcosBackuper.createAlarms(['marathon', 'metronome'])
