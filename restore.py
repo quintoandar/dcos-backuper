@@ -29,6 +29,9 @@ class DcosRestorer():
 
     def registerConfig(self, config):
         LOGGER.info('Restoring %s', config['id'])
+        if self.service == 'marathon':
+            if config.get('uris'):
+                del config['uris']
         r = requests.post(self.url, json=config)
         LOGGER.info('Status code: %s', str(r.status_code))
         LOGGER.info('Body: %s', r.text)
