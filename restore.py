@@ -28,7 +28,7 @@ class DcosRestorer():
 
     def registerConfig(self, config):
         LOGGER.info('Restoring %s', config['id'])
-        r = requests.post(self.url, json=config)
+        r = requests.put(self.url, json=config)
         LOGGER.info('Status code: %s', str(r.status_code))
         LOGGER.info('Body: %s', r.text)
 
