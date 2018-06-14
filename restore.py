@@ -21,6 +21,7 @@ class DcosRestorer():
                        'metronome': '/v0/scheduled-jobs'}
         self.url = url + endpointMap[service]
         self.file = filePath
+        self.service = service
 
     def loadFile(self):
         LOGGER.info('Loading file %s', self.file)
@@ -28,12 +29,15 @@ class DcosRestorer():
 
     def registerConfig(self, config):
         LOGGER.info('Restoring %s', config['id'])
-        r = requests.put(self.url, json=config)
+        r = requests.post(self.url, json=config)
         LOGGER.info('Status code: %s', str(r.status_code))
         LOGGER.info('Body: %s', r.text)
 
     def run(self):
-        for config in self.loadFile():
+        configs = self.loadFile()
+        if self.service == 'marathon':
+            configs = configs['apps']
+        for config in configs:
             self.registerConfig(config)
 
 
